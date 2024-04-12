@@ -8,47 +8,46 @@
         <div class="col-md-6">
           <mat-form-field>
             <mat-label>Atribuir card a qual quadro?</mat-label>
-            <mat-select placeholder="Selecione um Quadro" formControlName="id"
-              name="quadroSelecionado" required>
-              <mat-option *ngFor="let quadro of quadros" [value]="quadro.id">{{
-                quadro.nome }}</mat-option>
+            <mat-select placeholder="Selecione um Quadro" formControlName="id" name="quadroSelecionado" required
+              (selectionChange)="carregarDetalhesQuadro($event.value)">
+              <mat-option *ngFor="let quadro of quadros" [value]="quadro.id">
+                {{ quadro.nome }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
+
           <mat-form-field>
-            <input matInput formControlName="titulo" type="text"
-              placeholder="Título" name="titulo" required>
+            <input matInput formControlName="title" type="text" placeholder="Título" name="titulo" required>
           </mat-form-field>
 
           <mat-form-field>
-            <textarea matInput formControlName="descricao"
-              placeholder="Descrição" name="descricao" required></textarea>
+            <textarea matInput formControlName="description" placeholder="Descrição" name="descricao"
+              required></textarea>
           </mat-form-field>
         </div>
         <div class="col-md-6">
           <!-- Menu suspenso para selecionar o usuário -->
           <mat-form-field>
             <mat-label>Atribuído a:</mat-label>
-            <mat-select placeholder="Selecione um usuário"
-              formControlName="atribuido" name="usuarioSelecionado" required>
-              <mat-option *ngFor="let usuario of usuarios"
-                [value]="usuario.id">{{ usuario.nome }}</mat-option>
+            <mat-select placeholder="Selecione um usuário" formControlName="assignedTo" name="usuarioSelecionado"
+              required>
+              <mat-option *ngFor="let usuario of usuarios" [value]="usuario.id">{{ usuario.nome }}</mat-option>
             </mat-select>
           </mat-form-field>
+
 
           <!-- Menu suspenso para selecionar etiquetas -->
           <mat-form-field>
             <mat-label>Urgência:</mat-label>
-            <mat-select name="labels" formControlName="urgencia" multiple>
-              <mat-option *ngFor="let label of selectedLabels"
-                [value]="label">{{ label }}</mat-option>
+            <mat-select name="labels" formControlName="labels" multiple>
+              <mat-option *ngFor="let label of selectedLabels" [value]="label">{{ label }}</mat-option>
             </mat-select>
           </mat-form-field>
 
           <!-- Campo para digitar o comentário -->
           <mat-form-field>
-            <textarea matInput placeholder="Comentário"
-              formControlName="comentario" name="comentario"></textarea>
+            <textarea matInput placeholder="Comentário" formControlName="comments" name="comentario"></textarea>
           </mat-form-field>
         </div>
       </div>
@@ -72,8 +71,7 @@
             <div>Etiquetas: {{ card.labels.join(', ') }}</div>
             <!-- Outras informações do card -->
             <div class="button-container">
-              <button mat-raised-button color="primary"
-                (click)="editarCard(card)">Editar</button>
+              <button mat-raised-button color="primary" (click)="editarCard(card)">Editar</button>
               <!-- <button mat-raised-button color="warn" (click)="removerCard(card.id)">Remover</button> -->
             </div>
           </div>

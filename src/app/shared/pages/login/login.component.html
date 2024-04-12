@@ -3,16 +3,14 @@
     <div class="login-logo">
       <img src="../../../../assets/img/logo/logo-quadro.png" width="250px" alt="">
     </div>
-    <form (submit)="fazerLogin()" class="form" novalidate>
+    <form [formGroup]="loginForm" (ngSubmit)="fazerLogin()" class="form" novalidate>
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" class="form-control" placeholder="Digite seu email"
-          [(ngModel)]="email" required>
+        <input formControlName="email" type="email" id="email" name="email" class="form-control" placeholder="Digite seu email">
       </div>
       <div class="form-group">
         <label for="password">Senha</label>
-        <input type="password" id="password" name="password" class="form-control" placeholder="Digite sua senha"
-          [(ngModel)]="senha" required>
+        <input formControlName="senha" type="password" id="password" name="password" class="form-control" placeholder="Digite sua senha">
       </div>
       <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>

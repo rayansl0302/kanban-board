@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { QuadroDetalhesComponent } from './shared/components/quadro-detalhes/quadro-detalhes.component';
@@ -21,6 +22,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+
+
+//consultas
+
+import { AngularFireModule } from "@angular/fire/compat";
+import { AngularFireAuthModule } from "@angular/fire/compat/auth";
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { environment } from "../enviroments/environment"
 
 
 @NgModule({
@@ -49,6 +63,14 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     NgbModule,
     MatButtonModule,
     ReactiveFormsModule,
+    MatMenuModule,
+    MatToolbarModule,
+    MatIconModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
+    AngularFireDatabaseModule,
+    AngularFireStorageModule,
+    AngularFireAuthModule
   ],
   providers: [
     provideClientHydration(),

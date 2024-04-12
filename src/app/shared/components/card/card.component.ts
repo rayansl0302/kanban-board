@@ -29,7 +29,7 @@ export class CardComponent {
     });
   }
 
-  getUserName(userId: string): string {
+  getUserName(userId: number): string {
     const user = this.users.find(user => user.id === userId);
     if (user) {
       return `${user.nome} (${user.email})`;

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service/auth-service.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FirestoreService } from '../../services/firestore-service/firestore.service';
 
 @Component({
   selector: 'app-login',
@@ -8,56 +10,40 @@ import { AuthService } from '../../services/auth-service/auth-service.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  email: string = '';
-  senha: string = '';
-  emailValido: boolean = false;
-  senhaValida: boolean = false;
-  emailDirty: boolean = false;
-  senhaDirty: boolean = false;
-  emailTouched: boolean = false;
-  senhaTouched: boolean = false;
+  loginForm!: FormGroup;
+  submitted = false;
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private formBuilder: FormBuilder,
+    private firestoreService: FirestoreService,
   ) { }
 
   ngOnInit(): void {
-    console.log('LoginComponent: Inicializado');
-    // Verificar se o usuário está autenticado ao carregar o componente
-    if (this.authService.isUsuarioAutenticado()) {
-      console.log('LoginComponent: Usuário autenticado, redirecionando para a página home');
-      this.router.navigateByUrl('/home');
-    }
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      senha: ['', [Validators.required, Validators.minLength(6)]]
+    });
   }
 
+  get f() { return this.loginForm.controls; }
+
   fazerLogin(): void {
-    console.log('LoginComponent: Fazendo login...');
-    // Obtém os parâmetros da rota
-    const email = this.email;
-    const senha = this.senha;
-  
-    // Verifica se o email e a senha foram fornecidos
-    if (email && senha) {
-      console.log('LoginComponent: Email e senha fornecidos');
-      this.authService.fazerLogin(email, senha).subscribe(logado => {
-        if (logado) {
-          // Se o login for bem-sucedido, redireciona para a página home
-          console.log('LoginComponent: Login bem-sucedido, redirecionando para a página home');
-          console.log('LocalStorage após o login:', localStorage);
-          console.log('SessionStorage após o login:', sessionStorage);
-          this.router.navigateByUrl('/home');
-        } else {
-          // Se o login falhar, exibe um alerta com a mensagem de erro
-          console.log('LoginComponent: Login falhou, exibindo mensagem de erro');
-          alert('Erro: Usuário não encontrado');
-        }
-      });
-    } else {
-      // Se o email e a senha não forem fornecidos, exibe um alerta com a mensagem de erro
-      console.log('LoginComponent: Email e/ou senha não fornecidos, exibindo mensagem de erro');
-      alert('Erro: Email e/ou senha não fornecidos');
+    this.submitted = true;
+    if (this.loginForm.invalid) {
+      return;
     }
+
+    const email = this.f['email'].value;
+    const senha = this.f['senha'].value;
+
+    this.authService.fazerLogin(email, senha).subscribe(logado => {
+      if (logado) {
+        this.router.navigateByUrl('/home');
+      } else {
+        alert('Erro: Usuário não encontrado');
+      }
+    });
   }
-  
 }

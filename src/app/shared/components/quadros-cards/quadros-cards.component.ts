@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Quadro } from '../../model/card/quadro/quadro.module';
-import { QuadroService } from '../../services/quadro-service/quadro-service.service';
-import { Card } from '../../model/card/card/card.module';
-import { CardService } from '../../services/card-service/card-service.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { UserService } from '../../services/user-service/user.service';
+import { FirestoreService } from '../../services/firestore-service/firestore.service';
+import { Card } from '../../model/card/card/card.module';
+import { AngularFireAuth } from '@angular/fire/compat/auth'; // Importe AngularFireAuth
 
 @Component({
   selector: 'app-quadros-cards',
@@ -12,73 +11,119 @@ import { UserService } from '../../services/user-service/user.service';
   styleUrls: ['./quadros-cards.component.scss']
 })
 export class QuadrosCardsComponent implements OnInit {
-  @Input() quadroDetalhes: Quadro | null = null;
-  @Input() quadros: Quadro[] = [];
+  @Input() quadroDetalhes: Quadro | undefined = undefined;
 
   
-  selectedQuadroId: number | null = null; // Alterado para string para corresponder ao tipo do ID do quadro
+  quadros: Quadro[] = [];
+
+  selectedQuadroId: number | null = null;
   selectedQuadro: Quadro | null = null;
   formCard!: FormGroup;
 
-  novoTitulo: string = '';
-  novaDescricao: string = '';
-  novoComentario: string = '';
-  usuarioSelecionado: string | null = null; // Alterado para string para corresponder ao tipo do ID do usuário
-  selectedLabels: string[] = ['Urgente','Normal','Sem Prazo ( A definir)'];
+  selectedLabels: string[] = ['Urgente', 'Normal', 'Sem Prazo (A definir)'];
   usuarios: any[] = [];
 
+
   constructor(
-    private quadroService: QuadroService,
-    private userService: UserService,
-    private cardService: CardService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private firestoreService: FirestoreService,
+    private afAuth: AngularFireAuth // Injete AngularFireAuth
   ) { }
 
   ngOnInit(): void {
-    this.carregarQuadros();
     this.createForm();
     this.carregarUsuarios();
+    this.carregarQuadros();
   }
-  createForm(){
+
+  createForm(): void {
     this.formCard = this.formBuilder.group({
-      id:[null],
-      titulo:[null],
-      descricao: [null],
-      atribuido: [null],
-      urgencia: [null],
-      comentario: [null],
-    })
-  }
-  onSubmit() {
-    this.quadroService.adicionarCardAoQuadro(this.formCard.value).subscribe(e=>{
-      alert("Cartão criado!");
-      location.reload();
+      id: [null],
+      title: [null],
+      description: [null],
+      assignedTo: [null],
+      labels: [null],
+      comments: [null],
     });
   }
 
-  carregarUsuarios(){
-    this.userService.getUsers().subscribe(u => {
-      this.usuarios = u;
+  onSubmit(): void {
+    if (!this.selectedQuadroId) {
+      alert('Selecione um quadro antes de criar o card.');
+      return;
+    }
+
+    const quadroId = this.selectedQuadroId;
+    const cardData = this.formCard.value;
+
+    this.firestoreService.createCard(quadroId, cardData).then(() => {
+      alert('Cartão criado!');
+      location.reload();
+    }).catch(error => {
+      console.error('Erro ao criar o card:', error);
+    });
+  }
+
+  carregarUsuarios(): void {
+    // Carregue os usuários utilizando o serviço Firestore
+    this.firestoreService.getUsers().subscribe(usuarios => {
+      this.usuarios = usuarios;
+    }, error => {
+      console.error('Erro ao carregar os usuários:', error);
     });
   }
   
-  carregarQuadros() {
-    this.quadroService.getQuadros().subscribe(quadros => {
-      this.quadros = quadros;
+  carregarQuadros(): void {
+    // Obtenha o ID do usuário atualmente autenticado
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        // Converte o ID do usuário para número, se necessário
+        const userId = Number(user.uid);
+  
+        // Carregue os quadros do usuário utilizando o serviço Firestore
+        this.firestoreService.getUserBoards(userId).subscribe(quadros => {
+          this.quadros = quadros;
+        }, error => {
+          console.error('Erro ao carregar os quadros:', error);
+        });
+      }
     });
   }
 
   onSelectQuadro(): void {
-    if (this.selectedQuadroId) { // Verifica se o ID do quadro foi selecionado
+    console.log('Selected Quadro ID:', this.selectedQuadroId);
+    if (this.selectedQuadroId) {
       this.selectedQuadro = this.quadros.find(quadro => quadro.id === this.selectedQuadroId) || null;
     } else {
       this.selectedQuadro = null;
     }
   }
 
-  editarCard(card: Card) {
+  editarCard(card: Card): void {
+    if (typeof card.id === 'string') {
+      this.firestoreService.updateCard(card.id, card).then(() => {
+        alert('Card atualizado!');
+      }).catch(error => {
+        console.error('Erro ao editar o card:', error);
+      });
+    } else {
+      console.error('ID do card inválido:', card.id);
+    }
   }
 
-  removerCard(cardId: string) {
+  carregarDetalhesQuadro(quadroId: number): void {
+    this.firestoreService.getQuadro(quadroId).subscribe(quadro => {
+      this.quadroDetalhes = quadro; // Aqui atribuímos o quadroDetalhes, que deve ser do tipo Quadro | undefined
+    }, error => {
+      console.error('Erro ao carregar os detalhes do quadro:', error);
+    });
   }
+  
+  // removerCard(cardId: string): void {
+  //   this.firestoreService.deleteCard(cardId).then(() => {
+  //     alert('Card removido!');
+  //   }).catch(error => {
+  //     console.error('Erro ao remover o card:', error);
+  //   });
+  // }
 }

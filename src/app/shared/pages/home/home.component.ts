@@ -13,7 +13,7 @@ import { CardService } from '../../services/card-service/card-service.service';
 })
 export class HomeComponent implements OnInit {
   quadros: Quadro[] = [];
-  selectedQuadroId: number | null = null;
+  selectedQuadroId: Number | null = null;
   quadroDetalhesList: any[] = [];
 
   quadroDetalhes: QuadroDetalhes | null = null; // Alteração aqui

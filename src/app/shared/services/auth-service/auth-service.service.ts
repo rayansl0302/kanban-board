@@ -1,63 +1,63 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly STORAGE_KEY = 'user_authenticated';
   private usuarioAutenticado: boolean = false;
   private nomeUsuario: string = '';
+  private readonly STORAGE_KEY = 'user_authenticated';
 
-  constructor(private http: HttpClient) {
-    this.verificarAutenticacao();
-    console.log(this.usuarioAutenticado)
+  constructor(private afAuth: AngularFireAuth, private router: Router) {
+    this.afAuth.authState.subscribe(user => {
+      this.usuarioAutenticado = !!user;
+      this.nomeUsuario = user?.displayName || '';
+    });
   }
-
-  private verificarAutenticacao(): void {
-    if (typeof localStorage !== 'undefined') {
-        const auth = localStorage.getItem(this.STORAGE_KEY);
-      if (auth === 'true') {
-        this.usuarioAutenticado = true;
-      }
-    }
-  }
-  
 
   fazerLogin(email: string, senha: string): Observable<boolean> {
-    return this.http.get<any[]>('http://localhost:3000/usuarios', { params: { email, senha } })
-      .pipe(
-        map((usuarios: any[]) => {
-          const usuarioEncontrado = usuarios.find(usuario => usuario.email === email && usuario.senha === senha);
-          if (usuarioEncontrado) {
-            localStorage.setItem(this.STORAGE_KEY, 'true');
-            this.usuarioAutenticado = true;
-            this.nomeUsuario = usuarioEncontrado.nome;
-            return true;
-          } else {
-            return false;
-          }
-        }),
-        catchError(() => {
-          return of(false);
+    return new Observable<boolean>(observer => {
+      this.afAuth.signInWithEmailAndPassword(email, senha)
+        .then(() => {
+          localStorage.setItem(this.STORAGE_KEY, 'true');
+          observer.next(true);
+          observer.complete();
         })
-      );
+        .catch(error => {
+          console.error('Erro ao fazer login:', error);
+          observer.next(false);
+          observer.complete();
+        });
+    });
   }
-  
 
-  fazerLogout(): void {
-    this.usuarioAutenticado = false;
-    this.nomeUsuario = '';
-    localStorage.removeItem(this.STORAGE_KEY); // Trocando de localStorage para localStorage
+  fazerLogout(): Observable<void> {
+    return new Observable<void>(observer => {
+      this.afAuth.signOut()
+        .then(() => {
+          localStorage.removeItem(this.STORAGE_KEY); // Remover do local storage
+          observer.next();
+          observer.complete();
+          this.router.navigateByUrl('/login'); // Redirecionar para a página de login
+        })
+        .catch(error => {
+          console.error('Erro ao fazer logout:', error);
+          observer.error(error);
+        });
+    });
   }
 
   obterNomeUsuario(): string {
     return this.nomeUsuario;
   }
 
-  isUsuarioAutenticado(): boolean {
-    return this.usuarioAutenticado;
-  }
+  isUsuarioAutenticado(): Observable<boolean> {
+    return new Observable<boolean>(observer => {
+      observer.next(this.usuarioAutenticado);
+      observer.complete();
+    });
+  }  
 }
