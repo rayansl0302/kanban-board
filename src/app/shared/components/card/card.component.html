@@ -1,0 +1,36 @@
+<div class="card" [class.is-expanded]="card.isExpanded" (click)="toggleCardExpansion(card)">
+
+  <div class="card-header">
+    <h3>{{ card.title }}</h3>
+    <p>{{ card.description }}</p>
+  </div>
+  <div class="card-body">
+    <div class="assigned-to">
+      <span>Atribuído a:</span>
+      <ul>
+        <li *ngFor="let userId of card.assignedTo" class="user-id">{{ getUserName(userId) }}</li>
+      </ul>
+    </div>
+    <div class="labels">
+      <span>Prazo:</span>
+      <ul>
+        <li *ngFor="let label of card.labels" class="label">{{ label }}</li>
+      </ul>
+    </div>
+    <div class="comments">
+      <span>Comentários:</span>
+      <ul>
+        <li *ngFor="let comment of card.comments" class="comment">
+          <span class="author">{{ getUserName(comment.author) }}</span>
+          <p class="content">{{ comment.content }}</p>
+          <small class="timestamp">{{ comment.timestamp | date:'medium' }}</small>
+        </li>
+      </ul>
+    </div>
+    <div class="buttons">
+      <button class="btn btn-primary" (click)="editarCard(card)">Editar</button>
+      <!-- Verifica se card.id é definido e não é null antes de chamar removerCard -->
+      <button class="btn btn-danger" *ngIf="card.id !== undefined && card.id !== null" (click)="removerCard(card.id.toString())">Remover</button>
+    </div>
+  </div>
+</div>

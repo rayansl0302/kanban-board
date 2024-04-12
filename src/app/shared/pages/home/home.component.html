@@ -1,0 +1,94 @@
+<!-- <div class="home ">
+  <div class="row">
+    <div class="shadow">
+      <app-navbar (quadroSelecionado)="carregarDetalhesQuadro($event)"></app-navbar>
+
+    </div>
+    <div class="col-md-12 bg-light">
+      <h1>Tarefas</h1>
+      <div class="d-flex flex-wrap flex-column">
+        <div class="quadro-item">
+          <div class="row">
+            <div class="col-md-3">
+              <h2>Backlog</h2>
+              <app-quadro-detalhes [quadroDetalhes]="quadroDetalhes"></app-quadro-detalhes>
+            </div>
+            <div class="col-md-3">
+              <h2>A fazer (SPRINT)</h2>
+
+            </div>
+            <div class="col-md-3">
+              <h2>Em Andamento</h2>
+
+            </div>
+            <div class="col-md-3">
+              <h2>Feito</h2>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> -->
+<div class="home">
+  <div class="shadow">
+    <app-navbar (quadroSelecionado)="carregarDetalhesQuadro($event)"></app-navbar>
+  </div>
+  <div class="container mt-2">
+    <div class="row">
+      <div class="col-md-3">
+        <h2>Backlog</h2>
+
+      </div>
+      <div class="col-md-3">
+        <h2>A fazer (SPRINT)</h2>
+
+      </div>
+      <div class="col-md-3">
+        <h2>Em Andamento</h2>
+
+      </div>
+      <div class="col-md-3">
+        <h2>Feito</h2>
+
+      </div>
+
+    </div>
+    <div class="row ">
+      <div class="alinhamento" cdkDropListGroup *ngFor="let card of quadroDetalhes?.cards ?? []">
+        <div class="col-md-3">
+          <div cdkDropList [cdkDropListData]="quadroDetalhes?.cards ?? []" class="example-list"
+            (cdkDropListDropped)="drop($event, 'backlog')">
+            <div class="example-box" cdkDrag>
+              <app-card [card]="card"></app-card>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div cdkDropList [cdkDropListData]="quadroDetalhes?.cards ?? []" class="example-list"
+            (cdkDropListDropped)="drop($event, 'aFazer')">
+            <div class="example-box" cdkDrag></div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div cdkDropList [cdkDropListData]="quadroDetalhes?.cards ?? []" class="example-list"
+            (cdkDropListDropped)="drop($event, 'emAndamento')">
+            <div class="example-box" cdkDrag></div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div cdkDropList [cdkDropListData]="quadroDetalhes?.cards ?? []" class="example-list"
+            (cdkDropListDropped)="drop($event, 'feito')">
+            <div class="example-box" cdkDrag></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,64 @@
+.card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 275px;
+  overflow: hidden;
+  /* Garante que o conteúdo expandido não seja visível quando não estiver expandido */
+  transition: height 0.3s ease;
+
+  /* Adiciona um efeito de transição suave */
+  .card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .card-body {
+    padding: 20px;
+    display: none;
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .card-description {
+      margin-bottom: 10px;
+    }
+
+    .assigned-to {
+      margin-bottom: 10px;
+
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+    }
+
+    .due-date,
+    .labels,
+    .comments {
+      margin-top: 10px;
+    }
+
+    .comments li {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+  }
+
+}
+
+.card.is-expanded .card-body {
+  display: block;
+  /* Mostra o corpo do card quando o card está expandido */
+}
+
+.card.is-expanded {
+  height: auto;
+  /* Define a altura como automática quando o card está expandido */
+}

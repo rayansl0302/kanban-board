@@ -1,0 +1,28 @@
+<!-- quadro-detalhes.component.html -->
+<div *ngIf="quadroDetalhes">
+  <h2>{{ quadroDetalhes.nome }}</h2>
+  <p>ID: {{ quadroDetalhes.id }}</p>
+
+  <!-- {{ quadroDetalhes | json }} -->
+  
+  <div class="card-container">
+    <div *ngFor="let card of quadroDetalhes.cards" class="card">
+      <!-- Mostra apenas o título -->
+      <div class="card-header">{{ card.title }}</div>
+      <div class="card-body">
+        <!-- Mostra apenas a descrição -->
+        <p class="card-description">{{ card.description }}</p>
+        <!-- Detalhes adicionais do card, exibidos quando o card é expandido -->
+        <div *ngIf="card.isExpanded">
+          <div>Atribuído a: {{ card.assignedTo }}</div>
+          <div>Etiquetas: {{ card.labels.join(', ') }}</div>
+          <!-- Outras informações do card -->
+          <div class="button-container">
+            <button mat-raised-button color="primary">Editar</button>
+            <button mat-raised-button color="warn">Remover</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

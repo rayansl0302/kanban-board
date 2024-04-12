@@ -1,0 +1,20 @@
+.grid-modal {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 20px;
+    flex-direction: row;
+}
+.d-flex{
+    display: flex;
+    flex-basis: auto;
+    justify-content: space-between;
+}
+.right-row{
+    display: flex;
+    gap: 25px;
+
+}
+.nav-item_last{
+    display: flex;
+}

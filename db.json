@@ -1,0 +1,75 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nome": "Administrador",
+      "email": "adm@teste.com.br",
+      "senha": "123"
+    },
+    {
+      "id": "2",
+      "nome": "Rayan Silva Lima",
+      "email": "rayan.lima@shopdelivery.com.br",
+      "senha": "030298"
+    }
+  ],
+  "quadros": [
+    {
+      "id": "45b0",
+      "nome": "Quadro 1041",
+      "cards": [
+        {
+          "id": "3d32",
+          "title": "teste",
+          "description": "asdasdas",
+          "assignedTo": [
+            "1"
+          ],
+          "labels": [
+            "Sem Prazo(a definir)"
+          ],
+          "comments": [
+            {
+              "author": "1",
+              "content": "qeqweqweq",
+              "timestamp": "2024-04-11T11:40:21.780Z"
+            }
+          ]
+        },
+        {
+          "id": "6a01",
+          "title": "QUADRO 1041",
+          "description": "QUADRO 1041",
+          "assignedTo": [
+            "2"
+          ],
+          "labels": [
+            "Urgente"
+          ],
+          "comments": [
+            {
+              "author": "2",
+              "content": "QUADRO 1041",
+              "timestamp": "2024-04-11T17:08:36.325Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f056",
+      "nome": "teste de quadro",
+      "cards": []
+    },
+    {
+      "id": "3126",
+      "nome": "teste 2",
+      "cards": []
+    },
+    {
+      "id": "66cb",
+      "nome": "teste 4",
+      "cards": []
+    }
+  ]
+}
