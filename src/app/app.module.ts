@@ -30,7 +30,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { NgxMatFileInputModule } from '@angular-material-components/file-input';
 //consultas
 
 import { AngularFireModule } from "@angular/fire/compat";
@@ -91,7 +90,6 @@ import { CardDetailsComponent } from './shared/components/card-details/card-deta
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
-    NgxMatFileInputModule
   ],
   providers: [
     provideClientHydration(),
