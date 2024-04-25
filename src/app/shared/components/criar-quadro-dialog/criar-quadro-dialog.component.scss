@@ -1,0 +1,34 @@
+/* Estilo para o diálogo de criar novo quadro */
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    flex-direction: column;
+}
+/* Título do diálogo */
+.mat-dialog-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Conteúdo do diálogo */
+  .mat-dialog-content {
+    margin-top: 20px;
+  }
+  
+  /* Estilo para o campo de entrada */
+  mat-form-field {
+    width: 100%;
+  }
+  
+  /* Estilo para o botão de criar */
+  .mat-dialog-actions button.mat-button {
+    margin-right: 10px;
+  }
+  
+  /* Estilo para o botão de cancelar */
+  .mat-dialog-actions button.mat-button:first-child {
+    color: #f00; /* Cor vermelha para o botão de cancelar */
+  }
+  

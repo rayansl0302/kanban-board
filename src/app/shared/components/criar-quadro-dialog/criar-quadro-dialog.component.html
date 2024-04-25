@@ -1,0 +1,22 @@
+<div class="container">
+  <h1 mat-dialog-title>Criar Novo Quadro</h1>
+  <div mat-dialog-content [formGroup]="criarQuadroForm">
+    <mat-form-field>
+      <input matInput placeholder="Nome do Quadro" formControlName="nomeQuadro" required>
+    </mat-form-field>
+    <mat-checkbox formControlName="visivelParaTodos">Visível para todos</mat-checkbox>
+    <mat-checkbox formControlName="cards" [checked]="true" style="display: none;"></mat-checkbox>
+    <mat-form-field>
+      <mat-label>Atribuir a um usuário</mat-label>
+      <mat-select placeholder="Selecione um usuário" formControlName="usuarioSelecionado" required
+        (selectionChange)="onSelectUser($event)">
+        <mat-option *ngFor="let usuario of usuarios" [value]="usuario.uid">{{ usuario.nome }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="cancelar()">Cancelar</button>
+    <button mat-button color="primary" (click)="criarQuadro()" [disabled]="criarQuadroForm.invalid">Criar</button>
+  </div>
+</div>

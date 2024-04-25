@@ -1,0 +1,38 @@
+<!-- Exibe o botão para adicionar o checklist se não estiver mostrando o checklist e não houver itens no checklist -->
+<div *ngIf="card && !showChecklist && (!checklist || checklist.length === 0)" class="card-details-container">
+  <button mat-stroked-button color="primary" (click)="showChecklist = true">Adicionar Checklist</button>
+</div>
+
+<!-- Exibe o checklist se não estiver mostrando o checklist e houver itens no checklist -->
+<div *ngIf="card && !showChecklist && checklist && checklist.length > 0" class="card-details-container">
+  <h3>Checklist</h3>
+  <ul class="card-details-list">
+    <li *ngFor="let item of checklist" class="card-details-item">
+      <input type="checkbox" [checked]="item.completed" (change)="item.completed = !item.completed" class="card-details-checkbox">
+      <span>{{ item.title }}</span>
+      <button mat-icon-button class="card-details-button" (click)="removerItemChecklist(item)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
+  </ul>
+</div>
+
+<!-- Exibe o checklist se estiver mostrando o checklist -->
+<div *ngIf="showChecklist" class="card-details-container">
+  <h3>Adicionar Checklist</h3>
+  <form [formGroup]="checklistForm" class="card-details-form" (ngSubmit)="adicionarItemChecklist()">
+    <input type="text" formControlName="novoItem" placeholder="Novo item do checklist">
+    <button mat-button type="submit">Adicionar</button>
+    <button mat-button type="button" class="ml-3" color="warn" (click)="cancelarAdicaoChecklist()">Cancelar</button>
+  </form>
+  <ul class="card-details-list">
+    <li *ngFor="let item of checklist" class="card-details-item">
+      <input type="checkbox" [checked]="item.completed" (change)="item.completed = !item.completed" class="card-details-checkbox">
+      <span>{{ item.title }}</span>
+      <button mat-icon-button class="card-details-button" (click)="removerItemChecklist(item)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
+  </ul>
+  <button mat-button (click)="salvarChecklist()">Salvar Checklist</button>
+</div>

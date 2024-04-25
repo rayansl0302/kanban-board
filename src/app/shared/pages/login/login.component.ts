@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth-service/auth-service.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FirestoreService } from '../../services/firestore-service/firestore.service';
+import { AuthService } from '../../services/auth-service/auth-service.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +16,6 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private formBuilder: FormBuilder,
-    private firestoreService: FirestoreService,
   ) { }
 
   ngOnInit(): void {
@@ -38,12 +36,11 @@ export class LoginComponent implements OnInit {
     const email = this.f['email'].value;
     const senha = this.f['senha'].value;
 
-    this.authService.fazerLogin(email, senha).subscribe(logado => {
-      if (logado) {
-        this.router.navigateByUrl('/home');
-      } else {
-        alert('Erro: Usuário não encontrado');
-      }
+    this.authService.login(email, senha).then(() => {
+      this.router.navigateByUrl('/home');
+    }).catch(error => {
+      console.error('Erro ao fazer login:', error);
+      alert('Erro ao fazer login. Por favor, tente novamente.');
     });
   }
 }

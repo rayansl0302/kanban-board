@@ -8,12 +8,12 @@ export const environment = {
   production: false,
   apiUrl: '',
   firebaseConfig: {
-    apiKey: "AIzaSyD61hChp3I23xhrm6PDkMNhjGTKcDeZvE4",
-    authDomain: "quadro-kanban.firebaseapp.com",
-    projectId: "quadro-kanban",
-    storageBucket: "quadro-kanban.appspot.com",
-    messagingSenderId: "715933006399",
-    appId: "1:715933006399:web:5689ff463f4ae62874168a"
+    apiKey: "AIzaSyBD-sy5Yk-vV35xreHuKpNqsIPW4UkApes",
+    authDomain: "kaban-board-c0294.firebaseapp.com",
+    projectId: "kaban-board-c0294",
+    storageBucket: "kaban-board-c0294.appspot.com",
+    messagingSenderId: "874273593596",
+    appId: "1:874273593596:web:59ce3c94eb2f593f751f79"
   }
 };
 

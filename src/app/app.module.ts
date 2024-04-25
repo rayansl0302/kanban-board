@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { QuadroDetalhesComponent } from './shared/components/quadro-detalhes/quadro-detalhes.component';
@@ -25,8 +24,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { DatePipe } from '@angular/common';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { NgxMatFileInputModule } from '@angular-material-components/file-input';
 //consultas
 
 import { AngularFireModule } from "@angular/fire/compat";
@@ -35,6 +39,12 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { environment } from "../enviroments/environment"
+import { RouterModule } from '@angular/router';
+import { CriarQuadroDialogComponent } from './shared/components/criar-quadro-dialog/criar-quadro-dialog.component';
+import { UserListComponent } from './shared/components/user-list/user-list.component';
+import { EditCardModalComponent } from './shared/components/edit-card/edit-card-modal.component';
+import { CriarComentarioComponent } from './shared/components/criar-comentario/criar-comentario.component';
+import { CardDetailsComponent } from './shared/components/card-details/card-details.component';
 
 
 @NgModule({
@@ -46,12 +56,18 @@ import { environment } from "../enviroments/environment"
     LoginComponent,
     QuadroDetalhesComponent,
     NavbarComponent,
+    CriarQuadroDialogComponent,
+    UserListComponent,
+    EditCardModalComponent,
+    CriarComentarioComponent,
+    CardDetailsComponent,
   ],
   exports: [
     QuadroDetalhesComponent
   ],
   imports: [
     BrowserModule,
+    RouterModule.forRoot([]),
     AppRoutingModule,
     CommonModule,
     DragDropModule,
@@ -62,6 +78,7 @@ import { environment } from "../enviroments/environment"
     MatSelectModule,
     NgbModule,
     MatButtonModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     MatMenuModule,
     MatToolbarModule,
@@ -70,12 +87,18 @@ import { environment } from "../enviroments/environment"
     AngularFirestoreModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+    NgxMatFileInputModule
   ],
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    AuthGuard
+    AuthGuard,
+    DatePipe,
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
   ],
   bootstrap: [AppComponent]
 })

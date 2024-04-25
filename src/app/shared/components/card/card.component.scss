@@ -1,28 +1,32 @@
 .card {
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 275px;
-  overflow: hidden;
-  /* Garante que o conteúdo expandido não seja visível quando não estiver expandido */
   transition: height 0.3s ease;
-
+  
   /* Adiciona um efeito de transição suave */
   .card-header {
-    background-color: #007bff;
+    background-color: #20466d;
+    display: flex;
     color: #fff;
-    padding: 10px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    justify-content: center;
+    align-items: center;
   }
 
   .card-body {
     padding: 20px;
-    display: none;
 
     .buttons {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-around;
+      gap: 5px;
+
+      button {
+        width: 100%;
+        max-width: 320px;
+      }
     }
 
     .card-description {
@@ -40,14 +44,27 @@
 
     .due-date,
     .labels,
+    .description,
+    .urgencia,
     .comments {
       margin-top: 10px;
     }
 
+    .comments ul {
+      display: flex;
+      flex-direction: column;
+      margin-top: 25px;
+      padding-left: 0px;
+
+    }
+
     .comments li {
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 10px;
+      background: #cccccc3a;
+      border-radius: 7px;
       margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
     }
   }
 
@@ -61,4 +78,14 @@
 .card.is-expanded {
   height: auto;
   /* Define a altura como automática quando o card está expandido */
+}
+
+h3 {
+  font-size: 30px;
+  margin: 0px;
+}
+
+span {
+  font-weight: 700;
+  font-size: 14px;
 }

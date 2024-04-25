@@ -1,21 +1,20 @@
 <div class="quadro">
   <div class="quadro-body">
     <h2 class="quadro-header">{{ quadroDetalhes?.nome }}</h2>
-    <!-- Adicionando o operador de navegação segura (?) -->
 
     <form [formGroup]="formCard" (ngSubmit)="onSubmit()">
+      <h2>Criar Card</h2>
       <div class="row">
         <div class="col-md-6">
-          <mat-form-field>
+          <mat-form-field *ngIf="quadros && quadros.length > 0">
             <mat-label>Atribuir card a qual quadro?</mat-label>
-            <mat-select placeholder="Selecione um Quadro" formControlName="id" name="quadroSelecionado" required
-              (selectionChange)="carregarDetalhesQuadro($event.value)">
-              <mat-option *ngFor="let quadro of quadros" [value]="quadro.id">
+            <mat-select placeholder="Selecione um Quadro" formControlName="quadroId" name="quadroSelecionado" required
+              (selectionChange)="onSelectQuadro($event)">
+              <mat-option *ngFor="let quadro of quadros" [value]="quadro.quadroId">
                 {{ quadro.nome }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-
 
           <mat-form-field>
             <input matInput formControlName="title" type="text" placeholder="Título" name="titulo" required>
@@ -25,64 +24,68 @@
             <textarea matInput formControlName="description" placeholder="Descrição" name="descricao"
               required></textarea>
           </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker" formControlName="dueDate" placeholder="Prazo do Card" name="prazo">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+
         </div>
         <div class="col-md-6">
-          <!-- Menu suspenso para selecionar o usuário -->
           <mat-form-field>
             <mat-label>Atribuído a:</mat-label>
-            <mat-select placeholder="Selecione um usuário" formControlName="assignedTo" name="usuarioSelecionado"
-              required>
-              <mat-option *ngFor="let usuario of usuarios" [value]="usuario.id">{{ usuario.nome }}</mat-option>
+            <mat-select placeholder="Selecione um usuário" formControlName="assignedTo" required
+              (selectionChange)="onSelectUser($event)">
+              <mat-option *ngFor="let usuario of usuarios" [value]="{ uid: usuario.uid, email: usuario.email }">
+                {{ usuario.nome }} ({{ usuario.email }})
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
 
-          <!-- Menu suspenso para selecionar etiquetas -->
+          <mat-form-field>
+            <mat-label>Estado do Card</mat-label>
+            <mat-select formControlName="estado">
+              <mat-option value="Backlog">Backlog</mat-option>
+              <mat-option value="A fazer">A fazer</mat-option>
+              <mat-option value="Em Andamento">Em Andamento</mat-option>
+              <mat-option value="Feito">Feito</mat-option>
+            </mat-select>
+          </mat-form-field>
+
           <mat-form-field>
             <mat-label>Urgência:</mat-label>
             <mat-select name="labels" formControlName="labels" multiple>
               <mat-option *ngFor="let label of selectedLabels" [value]="label">{{ label }}</mat-option>
             </mat-select>
           </mat-form-field>
-
-          <!-- Campo para digitar o comentário -->
-          <mat-form-field>
-            <textarea matInput placeholder="Comentário" formControlName="comments" name="comentario"></textarea>
-          </mat-form-field>
+          <!-- Campo de entrada para fazer upload de imagens -->
+          <!-- <div class="form-group file-input-container">
+            <label for="image" class="label-image">Selecione uma imagem:</label>
+            <input type="file" class="form-control-file custom-file-input" id="image" (change)="onFileSelected($event)">
+          </div>
+           -->
         </div>
       </div>
-
-      <button mat-raised-button color="primary" type="submit">Criar
-        Card</button>
+      <button mat-raised-button color="primary" type="submit">Criar Card</button>
     </form>
 
-    <!-- Lista de cards no quadro -->
     <div class="card-container">
-      <div *ngFor="let card of quadroDetalhes?.cards" class="card">
-        <!-- Adicionando o operador de navegação segura (?) -->
-        <!-- Mostra apenas o título -->
+      <div *ngFor="let card of quadroDetalhes?.cards || []" class="card">
         <div class="card-header">{{ card.title }}</div>
         <div class="card-body">
-          <!-- Mostra apenas a descrição -->
           <p class="card-description">{{ card.description }}</p>
-          <!-- Detalhes adicionais do card, exibidos quando o card é expandido -->
-          <div *ngIf="card.isExpanded">
-            <div>Atribuído a: {{ card.assignedTo }}</div>
-            <div>Etiquetas: {{ card.labels.join(', ') }}</div>
-            <!-- Outras informações do card -->
+          <div *ngIf="card">
+            <div>Atribuído a: {{ card.assignedTo || 'Nenhum' }}</div>
+            <div>Etiquetas: {{ card.labels ? card.labels.join(', ') : 'Nenhuma' }}</div>
             <div class="button-container">
-              <button mat-raised-button color="primary" (click)="editarCard(card)">Editar</button>
-              <!-- <button mat-raised-button color="warn" (click)="removerCard(card.id)">Remover</button> -->
+              <button mat-raised-button color="primary" (click)="editarCard(card, userId!, quadroId)">Editar</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Botões para editar e remover o quadro -->
-    <!-- <div class="button-container">
-      <button mat-raised-button color="primary" class="mr-2" (click)="editarQuadro(quadroDetalhes)">Editar Quadro</button> Ajustando o parâmetro passado
-      <button mat-raised-button color="warn" class="ml-2" (click)="removerQuadro(quadroDetalhes?.id)">Remover Quadro</button> Adicionando o operador de navegação segura (?)
-    </div> -->
   </div>
 </div>

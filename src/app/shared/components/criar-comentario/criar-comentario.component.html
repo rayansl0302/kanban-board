@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="row">
+      <div class="col">
+        <h2>Adicionar comentário</h2>
+        <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="fill">
+            <textarea matInput formControlName="content" placeholder="Conteúdo do comentário"></textarea>
+            <mat-error *ngIf="commentForm.get('content')?.invalid && (commentForm.get('content')?.dirty || commentForm.get('content')?.touched)">
+              O conteúdo do comentário é obrigatório.
+            </mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid">Adicionar Comentário</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

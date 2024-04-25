@@ -1,0 +1,85 @@
+.card-details-container {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  
+    button {
+      margin-bottom: 10px;
+    }
+  
+    .card-details-form {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+  
+      input[type="text"] {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+        font-size: 14px;
+      }
+  
+      button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin: 5px;
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+  
+    .card-details-list {
+      list-style-type: none;
+      padding: 0;
+  
+      .card-details-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+  
+        .card-details-checkbox {
+          margin-right: 10px;
+          cursor: pointer;
+        }
+  
+        span {
+          flex: 1;
+        }
+  
+        .card-details-button {
+          background-color: transparent;
+          border: none;
+          cursor: pointer;
+          transition: color 0.3s ease;
+  
+          &:hover {
+            color: #dc3545;
+          }
+        }
+      }
+    }
+  
+    button[type="button"] {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+        margin: 5px;
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+  

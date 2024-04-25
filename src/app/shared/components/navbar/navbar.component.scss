@@ -5,19 +5,54 @@
     gap: 20px;
     flex-direction: row;
 }
-.d-flex{
+
+.d-flex {
     display: flex;
     flex-basis: auto;
     justify-content: space-between;
+    text-wrap: nowrap;
+    align-items: center;
+    margin-right: 10px;
 }
-.right-row{
+
+.right-row {
     display: flex;
     gap: 25px;
 
 }
-.nav-item_last{
+
+.nav-item_last {
     display: flex;
 }
-.mat-toolbar{
+
+.mat-toolbar {
     background-color: transparent;
+}
+
+.usuario-logado {
+    width: 100%;
+    background-color: #20466d;
+    color: #fff;
+    padding: 5px;
+    font-size: 15px;
+
+    p {
+        display: flex;
+        font-family: 'Glacial Indifference', sans-serif;
+        align-items: center;
+        justify-content: center;
+        margin: 0px;
+
+        strong {
+            font-weight: 600;
+            margin-left: 5px;
+            background-color: #ffffff2d;
+            padding: 2px 10px;
+            border-radius: 10px;
+        }
+    }
+
+
+
+
 }

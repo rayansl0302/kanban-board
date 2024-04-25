@@ -1,7 +1,10 @@
+import { Quadro } from "../quadro/quadro.module";
+
 export interface User {
-    id?: number | null;
+    uid?: string | null;
     nome: string;
     email: string;
-    senha: string; // A senha será omitida do tipo real, apenas o e-mail será retornado
+    quadro: Quadro[];
+
   }
   

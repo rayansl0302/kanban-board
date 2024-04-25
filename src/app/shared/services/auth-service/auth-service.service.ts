@@ -1,63 +1,72 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Observable } from 'rxjs';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private usuarioAutenticado: boolean = false;
-  private nomeUsuario: string = '';
-  private readonly STORAGE_KEY = 'user_authenticated';
-
-  constructor(private afAuth: AngularFireAuth, private router: Router) {
-    this.afAuth.authState.subscribe(user => {
-      this.usuarioAutenticado = !!user;
-      this.nomeUsuario = user?.displayName || '';
+  constructor(
+    public afAuth: AngularFireAuth,
+    public router: Router,
+    private afDatabase: AngularFireDatabase,
+  ) {
+    this.afAuth.authState.subscribe((user) => {
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        localStorage.setItem('user', 'null');
+      }
     });
   }
 
-  fazerLogin(email: string, senha: string): Observable<boolean> {
-    return new Observable<boolean>(observer => {
-      this.afAuth.signInWithEmailAndPassword(email, senha)
-        .then(() => {
-          localStorage.setItem(this.STORAGE_KEY, 'true');
-          observer.next(true);
-          observer.complete();
-        })
-        .catch(error => {
-          console.error('Erro ao fazer login:', error);
-          observer.next(false);
-          observer.complete();
-        });
-    });
+  get logado(): boolean {
+    const usuarioLogado = JSON.parse(localStorage.getItem('user')!);
+    return usuarioLogado !== null;
   }
 
-  fazerLogout(): Observable<void> {
-    return new Observable<void>(observer => {
-      this.afAuth.signOut()
-        .then(() => {
-          localStorage.removeItem(this.STORAGE_KEY); // Remover do local storage
-          observer.next();
-          observer.complete();
-          this.router.navigateByUrl('/login'); // Redirecionar para a página de login
-        })
-        .catch(error => {
-          console.error('Erro ao fazer logout:', error);
-          observer.error(error);
-        });
-    });
+  async login(email: string, password: string): Promise<void> {
+    try {
+      const result = await this.afAuth.signInWithEmailAndPassword(email, password);
+      localStorage.setItem('uid', result.user?.uid || '');
+      localStorage.setItem('email', result.user?.email || '');
+    } catch (error) {
+      throw error;
+    }
   }
 
-  obterNomeUsuario(): string {
-    return this.nomeUsuario;
+  logout(): Promise<void> {
+    localStorage.removeItem('uid');
+    localStorage.removeItem('email');
+    return this.afAuth.signOut()
+      .then(() => {
+        this.router.navigate(['login']);
+      });
+  }
+  
+
+  getUsers(): Observable<any[]> {
+    // Retorna um Observable que representa uma lista de usuários do Firebase Realtime Database
+    return this.afDatabase.list('users').valueChanges();
   }
 
-  isUsuarioAutenticado(): Observable<boolean> {
-    return new Observable<boolean>(observer => {
-      observer.next(this.usuarioAutenticado);
-      observer.complete();
-    });
-  }  
+  // Adicione este método para retornar o estado de autenticação
+  getAuthState(): Observable<any> {
+    return this.afAuth.authState;
+  }
+  async getUidByEmail(email: string): Promise<string | null> {
+    try {
+      const userCredential = await this.afAuth.fetchSignInMethodsForEmail(email);
+      if (userCredential && userCredential[0]) {
+        return userCredential[0];
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Erro ao obter UID pelo e-mail:', error);
+      return null;
+    }
+  }
 }

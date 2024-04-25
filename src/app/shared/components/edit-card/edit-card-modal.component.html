@@ -1,0 +1,33 @@
+<div class="container">
+    <h2 mat-dialog-title>Editar Card</h2>
+    <form [formGroup]="editForm" (ngSubmit)="salvarEdicao()">
+        <div class="row">
+            <mat-form-field>
+                <input matInput formControlName="title" placeholder="Título">
+            </mat-form-field>
+            <mat-form-field>
+                <textarea matInput formControlName="description" placeholder="Descrição"></textarea>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Atribuído a</mat-label>
+                <mat-select formControlName="assignedTo">
+                  <mat-option *ngFor="let usuario of usuarios" [value]="usuario.uid">{{ usuario.nome }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+            <mat-form-field>
+                <input matInput formControlName="dueDate" placeholder="Data" type="date">
+            </mat-form-field>
+            <div *ngIf="editForm.get('comments') instanceof FormArray">
+                <div *ngFor="let comment of editForm.get('comments')?.value || []; let i = index">
+                    <mat-form-field>
+                        <textarea matInput [formControlName]="i" placeholder="Comentário {{ i + 1 }}"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>            
+            
+        </div>
+        <button type="submit" mat-raised-button color="primary">Salvar</button>
+        <button mat-button mat-dialog-close>Cancelar</button>
+    </form>
+</div>
