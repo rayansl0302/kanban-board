@@ -7,7 +7,10 @@ import { CardComponent } from '../../components/card/card.component';
 import { Card } from '../../model/card/card/card.module';
 import { Quadro } from '../../model/card/quadro/quadro.module';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-
+import {
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -18,13 +21,16 @@ export class HomeComponent implements OnInit {
   selectedQuadro: Quadro | null = null; // Corrigido para selectedQuadro
   quadroDetalhes: Quadro | null = null;
   cards: Card[] = [];
+  cardsTeste: any = [];
   loading: boolean = true;
   userId: string | null = null; // Adicionando userId
-
+  cardsAfazer: string[] = [];
+  cardsAndamento: string[] = [];
+  cardsFeito: string[] = [];
   constructor(
     private userService: UserService,
     private quadroService: QuadroService,
-    private cardService:CardService,
+    private cardService: CardService,
     private afAuth: AngularFireAuth,
     private dialog: MatDialog,
   ) { }
@@ -38,11 +44,32 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  openCardModal(card: Card): void {
-    console.log('Card clicado:', card);
-    console.log('id do Card clicado:', card.id);
-    console.log('Quadro id do Card clicado:', this.selectedQuadro?.quadroId); // Usando selectedQuadro
-    console.log('UID do usuário : ',this.userId);
+  drop(event: any) {
+    
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
+  }
+
+
+  openCardModal(titulo: string): void {
+    let card:any = this.cards.filter((card)=>{
+      if(card.title == titulo){
+        return card
+      }
+      else{
+        return
+      }
+    })
+    
+    card = card[0]
 
     if (card.dueDate) {
       console.log('Data do card clicado:', card.dueDate);
@@ -92,6 +119,9 @@ export class HomeComponent implements OnInit {
         if (quadroDetalhes) {
           this.quadroDetalhes = quadroDetalhes;
           this.cards = quadroDetalhes.cards ? Object.values(quadroDetalhes.cards) : [];
+          this.cards.shift();
+          this.cardsTeste = this.cards.map((card) => { return card.title}
+        );
         } else {
           console.error('Detalhes do quadro não encontrados.');
           this.quadroDetalhes = null;

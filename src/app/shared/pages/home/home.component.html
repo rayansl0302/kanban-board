@@ -1,65 +1,73 @@
 <div class="home" *ngIf="!loading">
   <div class="shadow">
-    <app-navbar (quadroSelecionado)="carregarDetalhesQuadro($event)"></app-navbar>
+    <app-navbar
+      (quadroSelecionado)="carregarDetalhesQuadro($event)"></app-navbar>
   </div>
-  <div class="container mt-2">
-    <div class="row mb-3">
-      <div class="col-md-3 col-style">
-        <h2>Backlog</h2>
+  <div class="container" cdkDropListGroup>
+    <div class="example-container">
+      <h2>Backlog</h2>
+      <div
+        cdkDropList
+        [cdkDropListData]="cardsTeste"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (item of cardsTeste; track item) {
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+            {{item}}
+          </div></div>
+        }
       </div>
-      <div class="col-md-3 col-style">
-        <h2>A fazer (SPRINT)</h2>
+    </div>
+    <div class="example-container">
+      <h2>A fazer</h2>
+      <div
+        cdkDropList
+        [cdkDropListData]="cardsAfazer"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (item of cardsAfazer ; track item) {
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+            {{item}}
+          </div></div>
+        }
       </div>
-      <div class="col-md-3 col-style">
-        <h2>Em Andamento</h2>
-      </div>
-      <div class="col-md-3 col-style">
-        <h2>Feito</h2>
+    </div>
+    <div class="example-container">
+      <h2>Em Andamento</h2>
+      <div
+        cdkDropList
+        [cdkDropListData]="cardsAndamento"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (item of cardsAndamento ; track item) {
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+            {{item}}
+          </div></div>
+        }
       </div>
     </div>
 
-    <!-- Exibir previamente os cards de acordo com o usuário logado -->
-    <div class="row">
-      <div class="alinhamento" *ngFor="let card of cards; let i = index">
-        <ng-container *ngIf="i !== 0">
-          <div class="col-md-3">
-            <div class="example-list">
-              <div class="example-box" *ngIf="card" (click)="openCardModal(card)">
-                <div class="card-header">
-                  <h3>{{ card.title }}</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-md-3">
-            <div class="example-list">
-              <div class="example-box"></div>
-            </div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="example-list">
-              <div class="example-box"></div>
-            </div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="example-list">
-              <div class="example-box"></div>
-            </div>
-          </div>
-        </ng-container>
+    <div class="example-container">
+      <h2>Feito</h2>
+      <div
+        cdkDropList
+        [cdkDropListData]="cardsFeito"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (item of cardsFeito ; track item) {
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+            {{item}}
+          </div></div>
+        }
       </div>
     </div>
+
   </div>
 </div>
 
-<!-- Backdrop com loading -->
 <div class="backdrop" *ngIf="loading">
   <div class="logo">
-    <img src="../../../../assets/img/logo/logo-quadro.png" alt="">
+    <img src="../../../../assets/img/logo/logo-quadro.png" alt>
   </div>
   <div class="loading">
     <mat-spinner diameter="80"></mat-spinner>

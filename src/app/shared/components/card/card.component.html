@@ -29,7 +29,8 @@
           <span>Prazo:</span>
           <ul>
             <li *ngIf="card.dueDate">
-              {{ card.dueDate.day }}/{{ card.dueDate.month }}/{{ card.dueDate.year }}
+              {{ card.dueDate.day }}/{{ card.dueDate.month }}/{{
+              card.dueDate.year }}
             </li>
           </ul>
         </div>
@@ -42,7 +43,8 @@
           </ul>
         </div>
         <div class="mt-5 mb-5">
-          <app-card-details [card]="card" [quadroId]="quadroId" [userId]="userId"></app-card-details>
+          <app-card-details [card]="card" [quadroId]="quadroId"
+            [userId]="userId"></app-card-details>
         </div>
 
       </div>
@@ -50,14 +52,18 @@
         <div class="comments">
           <span>Comentários:</span>
           <ul>
-            <li class="comment" *ngFor="let comment of (comments | async)?.slice(1)">
+            <li class="comment"
+              *ngFor="let comment of (comments | async)?.slice(1)">
               <div class="conteudo">
                 <span class="author">{{ getCommentAuthor(comment) }}</span>
                 <p class="content">{{ comment.content }}</p>
-                <small class="timestamp">{{ formatDate(comment.timestamp) }}</small>
+                <small class="timestamp">{{ formatDate(comment.timestamp)
+                  }}</small>
               </div>
               <div class="button">
-                <button class="btn btn-danger" (click)="deleteComment(comment.id)">Excluir Comentário</button>
+                <button class="btn btn-danger"
+                  (click)="deleteComment(comment.id)">Excluir
+                  Comentário</button>
               </div>
             </li>
           </ul>
@@ -66,31 +72,37 @@
       <!-- Exibe o botão para adicionar uma nova imagem se não houver imagens carregadas -->
 
       <!-- Exibe a lista de imagens se houver imagens carregadas -->
-      <div *ngIf="formCard.get('images')?.value && formCard.get('images')?.value.length > 0" class="form-group">
+      <div
+        *ngIf="formCard.get('images')?.value && formCard.get('images')?.value.length > 0"
+        class="form-group">
         <label>Imagens Carregadas:</label>
         <ul class="image-list">
           <li *ngFor="let image of formCard.get('images')?.value">
-            <a href="{{ image.url }}" download="{{ image.name }}">{{ image.name }}</a>
-            <img [src]="image.url" alt="{{ image.name }}" style="max-width: 100px; max-height: 100px;">
+            <a href="{{ image.url }}" download="{{ image.name }}">{{ image.name
+              }}</a>
+            <img [src]="image.url" alt="{{ image.name }}"
+              style="max-width: 100px; max-height: 100px;">
           </li>
         </ul>
       </div>
 
-      <div class="buttons">
-        <!-- <div *ngIf="formCard.get('images')?.value && formCard.get('images')?.value.length === 0" class="form-group">
-          <button type="button" class="btn btn-primary" (click)="toggleImageUpload()">Adicionar Nova Imagem</button>
-          <div *ngIf="showImageUpload" class="form-group mt-4 d-flex flex-column">
-            <label for="image">Selecione uma imagem:</label>
-            <input type="file" class="form-control-file custom-file-input" id="image" (change)="onFileSelected($event)"
-              accept="image/*">
-            <button type="button" class="btn btn-primary mt-2" (click)="enviarImagem()">Enviar</button>
-          </div>
-        </div> -->
-
-        <button class="btn btn-primary" (click)="openEditModal()">Editar</button>
-        <button class="btn btn-success" (click)="openModalcomentario(card)">Adicionar Comentário</button>
-        <button class="btn btn-danger" *ngIf="card.id" (click)="removerCard(card.id.toString())">Excluir Card</button>
-      </div>
-
     </div>
   </div>
+  <div class="buttons pt-5 pb-2 text-center">
+    <!-- <div *ngIf="formCard.get('images')?.value && formCard.get('images')?.value.length === 0" class="form-group">
+      <button type="button" class="btn btn-primary" (click)="toggleImageUpload()">Adicionar Nova Imagem</button>
+      <div *ngIf="showImageUpload" class="form-group mt-4 d-flex flex-column">
+        <label for="image">Selecione uma imagem:</label>
+        <input type="file" class="form-control-file custom-file-input" id="image" (change)="onFileSelected($event)"
+          accept="image/*">
+        <button type="button" class="btn btn-primary mt-2" (click)="enviarImagem()">Enviar</button>
+      </div>
+    </div> -->
+
+    <button class="btn btn-primary mr-2" (click)="openEditModal()">Editar</button>
+    <button class="btn btn-success mr-2"
+      (click)="openModalcomentario(card)">Adicionar Comentário</button>
+    <button class="btn btn-danger " *ngIf="card.id"
+      (click)="removerCard(card.id.toString())">Excluir Card</button>
+  </div>
+</div>

@@ -12,6 +12,7 @@
   overflow: hidden;
   display: block;
   margin: 5px 0px;
+  min-height: 40px;
 }
 
 .example-box {
@@ -79,14 +80,14 @@ h2 {
   display: flex;
   justify-content: center;
   gap: 5px;
+  width: 100%;
 }
 
 .col-style {
   display: flex;
-  justify-content: center;
   align-items: center;
-  border-right: 2px solid #e5e5e5;
   margin-top: 14px;
+  flex-direction: column;
 
 }
 
