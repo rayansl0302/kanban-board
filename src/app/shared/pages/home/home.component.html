@@ -1,63 +1,54 @@
 <div class="home" *ngIf="!loading">
   <div class="shadow">
-    <app-navbar
-      (quadroSelecionado)="carregarDetalhesQuadro($event)"></app-navbar>
+    <app-navbar (quadroSelecionado)="carregarDetalhesQuadro($event)"></app-navbar>
   </div>
   <div class="container" cdkDropListGroup>
     <div class="example-container">
       <h2>Backlog</h2>
-      <div
-        cdkDropList
-        [cdkDropListData]="cardsTeste"
-        class="example-list"
-        (cdkDropListDropped)="drop($event)">
+      <div cdkDropList [cdkDropListData]="cardsTeste" class="example-list" (cdkDropListDropped)="drop($event)">
         @for (item of cardsTeste; track item) {
-        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">
+          <div class="card-header">
             {{item}}
-          </div></div>
+          </div>
+        </div>
         }
       </div>
     </div>
     <div class="example-container">
       <h2>A fazer</h2>
-      <div
-        cdkDropList
-        [cdkDropListData]="cardsAfazer"
-        class="example-list"
-        (cdkDropListDropped)="drop($event)">
+      <div cdkDropList [cdkDropListData]="cardsAfazer" class="example-list" (cdkDropListDropped)="drop($event)">
         @for (item of cardsAfazer ; track item) {
-        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">
+          <div class="card-header">
             {{item}}
-          </div></div>
+          </div>
+        </div>
         }
       </div>
     </div>
     <div class="example-container">
       <h2>Em Andamento</h2>
-      <div
-        cdkDropList
-        [cdkDropListData]="cardsAndamento"
-        class="example-list"
-        (cdkDropListDropped)="drop($event)">
+      <div cdkDropList [cdkDropListData]="cardsAndamento" class="example-list" (cdkDropListDropped)="drop($event)">
         @for (item of cardsAndamento ; track item) {
-        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">
+          <div class="card-header">
             {{item}}
-          </div></div>
+          </div>
+        </div>
         }
       </div>
     </div>
 
     <div class="example-container">
       <h2>Feito</h2>
-      <div
-        cdkDropList
-        [cdkDropListData]="cardsFeito"
-        class="example-list"
-        (cdkDropListDropped)="drop($event)">
+      <div cdkDropList [cdkDropListData]="cardsFeito" class="example-list" (cdkDropListDropped)="drop($event)">
         @for (item of cardsFeito ; track item) {
-        <div class="example-box" cdkDrag (click)="openCardModal(item)">   <div class="card-header">
+        <div class="example-box" cdkDrag (click)="openCardModal(item)">
+          <div class="card-header">
             {{item}}
-          </div></div>
+          </div>
+        </div>
         }
       </div>
     </div>

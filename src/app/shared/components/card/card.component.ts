@@ -14,6 +14,8 @@ import { CommentsService } from '../../services/comments-service/comments.servic
 import { UserService } from '../../services/user-service/user.service';
 import { CardService } from '../../services/card-service/card.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { UploadImagesComponent } from '../upload-images/upload-images.component';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 @Component({
   selector: 'app-card',
@@ -34,6 +36,9 @@ export class CardComponent implements OnInit {
   selectedImage: File | null = null; // Adicionando controle para a imagem selecionada
   images: File[] = []; // Array para armazenar as imagens selecionadas
 
+  imageURL: string | undefined;
+  imageURLs: string[] | undefined;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
     private commentService: CommentsService,
     private userService: UserService,
@@ -41,7 +46,9 @@ export class CardComponent implements OnInit {
     private datePipe: DatePipe,
     private authService: AuthService,
     private cardService: CardService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private storage: AngularFireStorage
+
   ) {
 
   }
@@ -50,11 +57,6 @@ export class CardComponent implements OnInit {
     this.carregarUsuarios().subscribe(() => {
       this.card = this.data.card;  // Obtendo os dados passados do componente pai
       this.quadroId = this.data.quadroId; // Obtendo o ID do quadro passado pelo componente pai
-      console.log('Card recebido no CardComponent:', this.card);
-      console.log('ID DO Card recebido no CardComponent:', this.card.id);
-      console.log('ID do quadro recebido no CardComponent:', this.quadroId);
-      console.log('Data do card recebida:', this.card?.dueDate);
-      console.log('user id no component card ', this.userId) // Corrigido para userId
       // Carregar os comentários do cartão
       this.comments = this.commentService.getComments(
         this.userId || '', // Usando userId em vez de ''
@@ -67,23 +69,12 @@ export class CardComponent implements OnInit {
       images: [[]] // Inicializando o campo de imagens como um array vazio
     });
   }
-  onFileSelected(event: any): void {
-    const files: FileList = event.target.files; // Obtendo a lista de arquivos selecionados
-    if (files && files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        const file: File = files.item(i)!; // Obtendo cada arquivo da lista
-        this.images.push(file); // Adicionando o arquivo ao array de imagens
-      }
-    }
-  }
 
   getCommentKeys(comments: any): string[] {
     return Object.keys(comments || {});
   }
 
-  toggleImageUpload(): void {
-    this.showImageUpload = !this.showImageUpload; // Alternando entre verdadeiro e falso
-  }
+
   getCommentAuthor(comment: Comment): string {
     const user = this.users.find(user => user.email === comment.author);
     return user ? user.nome : 'Autor desconhecido';
@@ -131,7 +122,34 @@ export class CardComponent implements OnInit {
       data: { card: this.card }
     });
   }
-
+  openUploadImagemModal(): void {
+    console.log('Abrindo modal de upload de imagem...');
+    console.log('userId:', this.userId);
+    console.log('quadroId:', this.quadroId);
+    console.log('card:', this.card);
+  
+    const dialogRef = this.dialog.open(UploadImagesComponent, {
+      width: '400px',
+      data: {
+        userId: this.userId,
+        quadroId: this.quadroId,
+        card: this.card
+      }
+    });
+  
+    // Inscreva-se para receber os dados da modal após ser fechada
+    dialogRef.afterClosed().subscribe((result: string[]) => {
+      console.log('A modal foi fechada');
+      // Faça algo com os dados retornados pela modal
+      console.log('Dados retornados:', result);
+      if (result) {
+        console.log('Links das imagens enviadas:', result);
+        // Faça algo com os links das imagens, como atualizar a interface, etc.
+      }
+    });
+  }
+  
+  
   openModalcomentario(card: Card): void {
     if (!this.userId) {
       console.error('UID do usuário não encontrado.');
@@ -150,9 +168,6 @@ export class CardComponent implements OnInit {
   }
 
   removerCard(cardId: string | null | undefined) {
-    console.log('userUid:', this.userId); // Corrigido para userId
-    console.log('quadroId:', this.quadroId);
-    console.log('cardId:', cardId);
 
     if (this.userId && this.quadroId && cardId) {
       this.cardService.deleteCard(this.userId, this.quadroId, cardId).then(
@@ -207,28 +222,60 @@ export class CardComponent implements OnInit {
       // Exibir mensagem de erro para o usuário, lidar com o erro adequadamente, etc.
     }
   }
+  async enviarImagem(): Promise<void> {
+    try {
+      if (this.userId && this.quadroId && typeof this.card.id === 'string' && this.selectedImage) {
+        const cardId = this.card.id as string; // Convertendo this.card.id para string
+        await this.cardService.enviarImagens(this.userId, this.quadroId, cardId, [this.selectedImage]); // Passando o arquivo em um array
+        console.log('Imagem enviada com sucesso.');
+        // Faça qualquer ação necessária após o envio da imagem, como atualizar a interface, etc.
+      } else {
+        console.error('Informações incompletas para enviar imagem.');
+        // Lide com o caso em que as informações necessárias não estão disponíveis
+      }
+    } catch (error) {
+      console.error('Erro ao enviar imagem:', error);
+      // Lide com o erro adequadamente, exiba uma mensagem para o usuário, etc.
+    }
+  }
+  
 
-  // enviarImagem(): void {
-  //   if (this.selectedImage) {
-  //     const userId = this.userId || '';
-  //     const quadroId = this.quadroId || '';
-  //     const cardId = this.card.id || '';
+  downloadImage(imageURL: string): void {
+    // Cria um elemento <a> para iniciar o download da imagem
+    const link = document.createElement('a');
+    link.href = imageURL;
 
-  //     this.cardService.uploadImage(userId, quadroId, cardId, this.selectedImage).then(() => {
-  //       console.log('Imagem enviada com sucesso.');
-  //       // Atualizar a lista de imagens carregadas
-  //       const image = { name: this.selectedImage.name, url: 'caminho/para/sua/pasta/' + this.selectedImage.name };
-  //       this.images.push(image);
-  //       // Limpar a imagem selecionada
-  //       this.selectedImage = null;
-  //       // Esconder o campo de upload de imagem
-  //       this.showImageUpload = false;
-  //     }).catch(error => {
-  //       console.error('Erro ao enviar imagem:', error);
-  //     });
-  //   } else {
-  //     console.warn('Nenhuma imagem selecionada.');
-  //   }
-  // }
+    // Define o atributo "download" para que o navegador inicie o download automaticamente
+    link.download = 'image.jpg';
 
+    // Adiciona o elemento <a> ao corpo do documento (necessário para alguns navegadores)
+    document.body.appendChild(link);
+
+    // Simula um clique no elemento <a> para iniciar o download
+    link.click();
+
+    // Remove o elemento <a> do corpo do documento após o download
+    document.body.removeChild(link);
+  }
+
+  isImageURLString(): boolean {
+    return typeof this.card.imageURLs === 'string';
+  }
+
+  removerImagem(imageURL: string): void {
+    // Obtenha a referência do arquivo com base no URL da imagem
+    const fileRef = this.storage.refFromURL(imageURL);
+    
+    // Exclua o arquivo do armazenamento
+    fileRef.delete().subscribe(() => {
+      console.log('Imagem removida com sucesso do armazenamento.');
+      
+      // Agora, você precisa remover o URL da imagem da lista de imageURLs
+      // Aqui, você pode implementar a lógica para remover o imageURL do card.imageURLs
+      // Depois de remover, a lista será atualizada automaticamente na interface do usuário
+    }, error => {
+      console.error('Erro ao remover imagem do armazenamento:', error);
+      // Lidar com o erro adequadamente, exibir mensagem para o usuário, etc.
+    });
+  }
 }

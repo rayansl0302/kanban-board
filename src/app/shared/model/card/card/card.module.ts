@@ -18,4 +18,5 @@ export interface Card {
   emAndamento?: boolean; // Indica se está na categoria "Em Andamento"
   feito?: boolean; // Indica se está na categoria "Feito"
   checklist?: Checklist[] | null;
+  imageURLs?: string[]; 
 }

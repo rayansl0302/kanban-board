@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { BehaviorSubject, Observable, Subject, take } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, finalize, map, switchMap, take, tap } from 'rxjs';
 import { Card } from '../../model/card/card/card.module';
 import { Data } from '../../model/data/data.model';
 import { Comment } from '../../model/comment/comment.model';
 import { Checklist } from '../../model/checklist/checklist.module';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +16,7 @@ export class CardService {
   selectedCard: BehaviorSubject<Card | null> = new BehaviorSubject<Card | null>(null);
 
   constructor(private db: AngularFireDatabase,
-    private afAuth: AngularFireAuth,) { }
+    private afAuth: AngularFireAuth, private storage: AngularFireStorage) { }
 
   // Métodos para cartões /////////////////////////////////////////////////////////////////////
 
@@ -127,27 +129,69 @@ export class CardService {
     return this.db.object(`users/${userId}/quadro/${quadroId}/cards/${cardId}/checklist`).update(checklist);
   }
 
-  async uploadImage(userId: string, quadroId: string, cardId: string, file: File): Promise<void> {
+  
+  enviarImagens(userId: string, quadroId: string, cardId: string, files: File[]): void {
     try {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = async () => {
-        const imageURL = reader.result as string;
-        await this.updateCardImageURL(userId, quadroId, cardId, imageURL);
-      };
+      files.forEach((file, index) => {
+        const filePath = `image-card/${new Date().getTime()}_${index}_${file.name}`;
+        const fileRef = this.storage.ref(filePath);
+        const uploadTask = this.storage.upload(filePath, file);
+
+        uploadTask.snapshotChanges().pipe(
+          finalize(() => {
+            fileRef.getDownloadURL().subscribe((url) => {
+              this.updateCardImageURL(userId, quadroId, cardId, url);
+            });
+          })
+        ).subscribe();
+      });
     } catch (error) {
-      console.error('Erro ao fazer upload da imagem:', error);
+      console.error('Erro ao enviar as imagens:', error);
       throw error;
     }
   }
 
-  private updateCardImageURL(userId: string, quadroId: string, cardId: string, imageURL: string): void {
+  public updateCardImageURL(userId: string, quadroId: string, cardId: string, imageURL: string): void {
     try {
       const cardRef = this.db.object(`users/${userId}/quadro/${quadroId}/cards/${cardId}`);
-      cardRef.update({ imageURL }); // Atualiza o card com a URL da imagem
+      cardRef.snapshotChanges().pipe(
+        take(1),
+        map((snapshot) => snapshot.payload.exists()),
+        switchMap((exists) => {
+          if (exists) {
+            return cardRef.valueChanges().pipe(
+              take(1),
+              tap((card: any) => {
+                let imageURLs: string[] = [];
+                if (card.imageURLs && Array.isArray(card.imageURLs)) {
+                  imageURLs = [...card.imageURLs]; // Clonar a lista existente
+                }
+                imageURLs.push(imageURL); // Adicionar o novo URL à lista
+                cardRef.update({ imageURLs }); // Atualizar o card com a nova lista de URLs
+              })
+            );
+          } else {
+            throw new Error('O card não existe.');
+          }
+        })
+      ).subscribe(() => {
+        console.log('URL da imagem adicionado com sucesso no card.');
+      });
     } catch (error) {
       console.error('Erro ao atualizar o URL da imagem no card:', error);
       throw error;
     }
   }
+  
+  
+  
+
+
+// Na função getImageURL do CardService
+async getImageURL(userId: string, quadroId: string, cardId: string, imageName: string): Promise<string> {
+  const filePath = `image-card/${userId}/${quadroId}/${cardId}/${imageName}`;
+  const fileRef = this.storage.ref(filePath);
+  return fileRef.getDownloadURL().toPromise();
+}
+
 }

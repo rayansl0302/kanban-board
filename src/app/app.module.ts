@@ -44,6 +44,7 @@ import { UserListComponent } from './shared/components/user-list/user-list.compo
 import { EditCardModalComponent } from './shared/components/edit-card/edit-card-modal.component';
 import { CriarComentarioComponent } from './shared/components/criar-comentario/criar-comentario.component';
 import { CardDetailsComponent } from './shared/components/card-details/card-details.component';
+import { UploadImagesComponent } from './shared/components/upload-images/upload-images.component';
 
 
 @NgModule({
@@ -60,6 +61,7 @@ import { CardDetailsComponent } from './shared/components/card-details/card-deta
     EditCardModalComponent,
     CriarComentarioComponent,
     CardDetailsComponent,
+    UploadImagesComponent,
   ],
   exports: [
     QuadroDetalhesComponent

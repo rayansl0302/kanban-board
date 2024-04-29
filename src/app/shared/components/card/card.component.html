@@ -1,24 +1,38 @@
 <div class="card" *ngIf="card">
   <div class="card-header">
-    <h3>{{ card.title }}</h3>
+    <h3>
+      <mat-icon>insert_drive_file</mat-icon> <!-- Ícone -->
+      {{ card.title }}
+    </h3>
   </div>
   <div class="card-body">
     <div class="row">
       <div class="col-md-6">
         <div class="description">
-          <span>Descrição do card:</span>
-          <p>{{ card.description }}</p>
+          <span>
+            <mat-icon>description</mat-icon> <!-- Ícone -->
+            Descrição do card:
+          </span>
+          <ul>
+            <li>{{ card.description }}</li>
+          </ul>
         </div>
         <div class="assigned-to" *ngIf="card.assignedTo">
-          <span>Atribuído a:</span>
+          <span>
+            <mat-icon>assignment_ind</mat-icon> <!-- Ícone -->
+            Atribuído a:
+          </span>
           <ul>
-            <li class="user-name">
+            <li>
               {{ card.assignedTo.nome }} - {{ card.assignedTo.email }}
             </li>
           </ul>
         </div>
         <div class="urgencia">
-          <span>Urgência:</span>
+          <span>
+            <mat-icon>priority_high</mat-icon> <!-- Ícone -->
+            Urgência:
+          </span>
           <ul>
             <li>
               {{ card.labels }}
@@ -26,83 +40,100 @@
           </ul>
         </div>
         <div class="labels">
-          <span>Prazo:</span>
+          <span>
+            <mat-icon>schedule</mat-icon> <!-- Ícone -->
+            Prazo:
+          </span>
           <ul>
             <li *ngIf="card.dueDate">
-              {{ card.dueDate.day }}/{{ card.dueDate.month }}/{{
-              card.dueDate.year }}
+              {{ card.dueDate.day }}/{{ card.dueDate.month }}/{{ card.dueDate.year }}
             </li>
           </ul>
         </div>
         <div class="estado">
-          <span>Estado:</span>
+          <span>
+            <mat-icon>done</mat-icon> <!-- Ícone -->
+            Estado:
+          </span>
           <ul>
             <li>
               {{ card.estado }}
             </li>
           </ul>
         </div>
+
         <div class="mt-5 mb-5">
-          <app-card-details [card]="card" [quadroId]="quadroId"
-            [userId]="userId"></app-card-details>
+          <app-card-details [card]="card" [quadroId]="quadroId" [userId]="userId"></app-card-details>
         </div>
 
       </div>
+
       <div class="col-md-6">
+        <!-- Exibe a lista de imagens se houver imagens carregadas -->
+        <div *ngIf="card.imageURLs && card.imageURLs.length > 0" class="mt-4">
+          <span>Imagens Carregadas:</span>
+          <ul class="image-list">
+            <!-- Verifica se card.imageURLs é uma string ou uma lista -->
+            <ng-container *ngIf="isImageURLString(); else imageList">
+              <!-- Se card.imageURLs for uma string -->
+              <li>
+                <a [href]="card.imageURLs" target="_blank">
+                  <img [src]="card.imageURLs" class="thumbnail" width="100px" alt="Imagem do cartão">
+                </a>
+                <!-- <button type="button" class="btn btn-primary mt-2" (click)="downloadImage(card.imageURLs)">Baixar</button> -->
+              </li>
+            </ng-container>
+            <!-- Se card.imageURLs for um array -->
+            <ng-template #imageList>
+              <li *ngFor="let imageURL of card.imageURLs">
+                <a [href]="imageURL" target="_blank">
+                  <mat-icon class="remove-icon" (click)="removerImagem(imageURL)">delete</mat-icon>
+                  <img [src]="imageURL" class="thumbnail" width="100px" alt="Imagem do cartão"><span><!-- Adicionando ícone de remoção de imagem -->
+                    </span>
+
+                </a>
+              </li>
+            </ng-template>
+          </ul>
+        </div>
         <div class="comments">
-          <span>Comentários:</span>
+          <span>
+            <mat-icon>comment</mat-icon> <!-- Ícone -->
+            Comentários:
+          </span>
           <ul>
-            <li class="comment"
-              *ngFor="let comment of (comments | async)?.slice(1)">
+            <li class="comment" *ngFor="let comment of (comments | async)?.slice(1)">
               <div class="conteudo">
                 <span class="author">{{ getCommentAuthor(comment) }}</span>
                 <p class="content">{{ comment.content }}</p>
-                <small class="timestamp">{{ formatDate(comment.timestamp)
-                  }}</small>
+                <small class="timestamp">{{ formatDate(comment.timestamp) }}</small>
               </div>
               <div class="button">
-                <button class="btn btn-danger"
-                  (click)="deleteComment(comment.id)">Excluir
-                  Comentário</button>
+                <button class="btn btn-danger" (click)="deleteComment(comment.id)">Excluir Comentário</button>
               </div>
             </li>
           </ul>
         </div>
       </div>
       <!-- Exibe o botão para adicionar uma nova imagem se não houver imagens carregadas -->
-
-      <!-- Exibe a lista de imagens se houver imagens carregadas -->
-      <div
-        *ngIf="formCard.get('images')?.value && formCard.get('images')?.value.length > 0"
-        class="form-group">
-        <label>Imagens Carregadas:</label>
-        <ul class="image-list">
-          <li *ngFor="let image of formCard.get('images')?.value">
-            <a href="{{ image.url }}" download="{{ image.name }}">{{ image.name
-              }}</a>
-            <img [src]="image.url" alt="{{ image.name }}"
-              style="max-width: 100px; max-height: 100px;">
-          </li>
-        </ul>
-      </div>
-
     </div>
   </div>
   <div class="buttons pt-5 pb-2 text-center">
-    <!-- <div *ngIf="formCard.get('images')?.value && formCard.get('images')?.value.length === 0" class="form-group">
-      <button type="button" class="btn btn-primary" (click)="toggleImageUpload()">Adicionar Nova Imagem</button>
-      <div *ngIf="showImageUpload" class="form-group mt-4 d-flex flex-column">
-        <label for="image">Selecione uma imagem:</label>
-        <input type="file" class="form-control-file custom-file-input" id="image" (change)="onFileSelected($event)"
-          accept="image/*">
-        <button type="button" class="btn btn-primary mt-2" (click)="enviarImagem()">Enviar</button>
-      </div>
-    </div> -->
-
-    <button class="btn btn-primary mr-2" (click)="openEditModal()">Editar</button>
-    <button class="btn btn-success mr-2"
-      (click)="openModalcomentario(card)">Adicionar Comentário</button>
-    <button class="btn btn-danger " *ngIf="card.id"
-      (click)="removerCard(card.id.toString())">Excluir Card</button>
+    <button class="btn btn-primary mr-2" (click)="openUploadImagemModal()">
+      <mat-icon>image</mat-icon> <!-- Ícone -->
+      Adicionar Imagens
+    </button>
+    <button class="btn btn-primary mr-2" (click)="openEditModal()">
+      <mat-icon>edit</mat-icon> <!-- Ícone -->
+      Editar
+    </button>
+    <button class="btn btn-success mr-2" (click)="openModalcomentario(card)">
+      <mat-icon>comment_add</mat-icon> <!-- Ícone -->
+      Adicionar Comentário
+    </button>
+    <button class="btn btn-danger " *ngIf="card.id" (click)="removerCard(card.id.toString())">
+      <mat-icon>delete</mat-icon> <!-- Ícone -->
+      Excluir Card
+    </button>
   </div>
 </div>

@@ -5,10 +5,17 @@
 
 <!-- Exibe o checklist se não estiver mostrando o checklist e houver itens no checklist -->
 <div *ngIf="card && !showChecklist && checklist && checklist.length > 0" class="card-details-container">
-  <h3>Checklist</h3>
+  <div class="d-flex align-items-center justify-content-between">
+    <h3>Checklist</h3>
+    <button mat-icon-button color="primary" (click)="showChecklist = true">
+      <mat-icon>add</mat-icon>
+    </button>
+
+  </div>
   <ul class="card-details-list">
     <li *ngFor="let item of checklist" class="card-details-item">
-      <input type="checkbox" [checked]="item.completed" (change)="item.completed = !item.completed" class="card-details-checkbox">
+      <input type="checkbox" [checked]="item.completed" (change)="item.completed = !item.completed"
+        class="card-details-checkbox">
       <span>{{ item.title }}</span>
       <button mat-icon-button class="card-details-button" (click)="removerItemChecklist(item)">
         <mat-icon>delete</mat-icon>
@@ -27,7 +34,8 @@
   </form>
   <ul class="card-details-list">
     <li *ngFor="let item of checklist" class="card-details-item">
-      <input type="checkbox" [checked]="item.completed" (change)="item.completed = !item.completed" class="card-details-checkbox">
+      <input type="checkbox" [checked]="item.completed" (change)="item.completed = !item.completed"
+        class="card-details-checkbox">
       <span>{{ item.title }}</span>
       <button mat-icon-button class="card-details-button" (click)="removerItemChecklist(item)">
         <mat-icon>delete</mat-icon>
