@@ -14,6 +14,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 export class CardService {
   private selectedCardSubject = new Subject<Card>();
   selectedCard: BehaviorSubject<Card | null> = new BehaviorSubject<Card | null>(null);
+  public isLoading: boolean = false; // Variável para controlar o estado de carregamento
 
   constructor(private db: AngularFireDatabase,
     private afAuth: AngularFireAuth, private storage: AngularFireStorage) { }
@@ -129,18 +130,34 @@ export class CardService {
     return this.db.object(`users/${userId}/quadro/${quadroId}/cards/${cardId}/checklist`).update(checklist);
   }
 
-  
   enviarImagens(userId: string, quadroId: string, cardId: string, files: File[]): void {
     try {
+      // Define o estado de carregamento como verdadeiro ao iniciar o envio
+      this.isLoading = true;
+  
+      // Contador para acompanhar o número de imagens processadas
+      let imagesProcessed = 0;
+  
+      // Percorre cada arquivo para fazer o upload
       files.forEach((file, index) => {
         const filePath = `image-card/${new Date().getTime()}_${index}_${file.name}`;
         const fileRef = this.storage.ref(filePath);
         const uploadTask = this.storage.upload(filePath, file);
-
+  
         uploadTask.snapshotChanges().pipe(
           finalize(() => {
             fileRef.getDownloadURL().subscribe((url) => {
+              // Passa o estado do carregamento para a função de atualização do URL da imagem
               this.updateCardImageURL(userId, quadroId, cardId, url);
+  
+              // Incrementa o contador de imagens processadas
+              imagesProcessed++;
+  
+              // Verifica se todas as imagens foram processadas
+              if (imagesProcessed === files.length) {
+                // Desativa o indicador de carregamento após o processamento de todas as imagens
+                this.isLoading = false;
+              }
             });
           })
         ).subscribe();
@@ -150,7 +167,7 @@ export class CardService {
       throw error;
     }
   }
-
+  
   public updateCardImageURL(userId: string, quadroId: string, cardId: string, imageURL: string): void {
     try {
       const cardRef = this.db.object(`users/${userId}/quadro/${quadroId}/cards/${cardId}`);
@@ -176,6 +193,7 @@ export class CardService {
         })
       ).subscribe(() => {
         console.log('URL da imagem adicionado com sucesso no card.');
+        alert('As imagens foram enviadas com sucesso!');
       });
     } catch (error) {
       console.error('Erro ao atualizar o URL da imagem no card:', error);
@@ -183,9 +201,6 @@ export class CardService {
     }
   }
   
-  
-  
-
 
 // Na função getImageURL do CardService
 async getImageURL(userId: string, quadroId: string, cardId: string, imageName: string): Promise<string> {

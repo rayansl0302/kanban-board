@@ -108,10 +108,52 @@ span {
   }
 }
 
+/* Estilos para a lista de imagens */
 .image-list {
+  list-style: none;
+  padding: 0;
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  flex-wrap: wrap;
+}
 
+/* Estilos para cada imagem */
+.image-container {
+  position: relative;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+/* Estilos para a imagem */
+.thumbnail {
+  width: 100px;
+  height: auto;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* Estilos para o botão de remoção */
+.remove-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  opacity: 0;
+  /* Inicialmente oculto */
+  font-size: 12px;
+  /* Define o tamanho do ícone pela metade */
+}
+
+/* Mostrar o botão de remoção quando o mouse passar sobre a imagem */
+.image-container:hover .remove-icon {
+  opacity: 1;
+}
+
+/* Animação suave ao mostrar e ocultar o botão de remoção */
+.remove-icon {
+  transition: opacity 0.2s ease;
 }

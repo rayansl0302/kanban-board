@@ -1,10 +1,13 @@
-<div *ngIf="!formCard.get('imageURLs')?.value || formCard.get('imageURLs')?.value.length === 0" class="form-group">
-    <button type="button" class="btn btn-primary">Adicionar Nova Imagem</button>
+<div class="container">
+  <div *ngIf="!formCard.get('imageURLs')?.value || formCard.get('imageURLs')?.value.length === 0" class="form-group">
+    <h1>Adicionar Nova Imagem</h1>
     <div class="form-group mt-4 d-flex flex-column">
-      <label for="image">Selecione uma imagem:</label>
-      <input type="file" class="form-control-file custom-file-input" id="image" (change)="onFilesSelected($event)"
-        accept="image/*">
-      <button type="button" class="btn btn-primary mt-2" (click)="enviarImagens()">Enviar</button>
+      <label for="image" class="custom-file-label">Selecione uma imagem:</label>
+      <input type="file" class="custom-file-input" id="image" (change)="onFilesSelected($event)" accept="image/*">
+      <button type="button" class="btn btn-primary mt-2" (click)="enviarImagens()" [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Enviar
+      </button>
     </div>
   </div>
-  
+</div>

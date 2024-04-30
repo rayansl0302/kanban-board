@@ -80,22 +80,25 @@
                 <a [href]="card.imageURLs" target="_blank">
                   <img [src]="card.imageURLs" class="thumbnail" width="100px" alt="Imagem do cartão">
                 </a>
-                <!-- <button type="button" class="btn btn-primary mt-2" (click)="downloadImage(card.imageURLs)">Baixar</button> -->
               </li>
             </ng-container>
             <!-- Se card.imageURLs for um array -->
             <ng-template #imageList>
               <li *ngFor="let imageURL of card.imageURLs">
-                <a [href]="imageURL" target="_blank">
-                  <mat-icon class="remove-icon" (click)="removerImagem(imageURL)">delete</mat-icon>
-                  <img [src]="imageURL" class="thumbnail" width="100px" alt="Imagem do cartão"><span><!-- Adicionando ícone de remoção de imagem -->
-                    </span>
-
-                </a>
+                <div class="image-container">
+                  <a [href]="imageURL" target="_blank">
+                    <img [src]="imageURL" class="thumbnail" width="100px" alt="Imagem do cartão">
+                  </a>
+                  <button mat-icon-button class="remove-icon" (click)="removerImagem(imageURL)" aria-label="Remover imagem">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
               </li>
             </ng-template>
+            
           </ul>
         </div>
+        
         <div class="comments">
           <span>
             <mat-icon>comment</mat-icon> <!-- Ícone -->

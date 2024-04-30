@@ -1,0 +1,54 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    .form-group {
+        margin-bottom: 20px;
+
+        .d-flex {
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333; // Cor do texto
+            text-align: center;
+
+        }
+
+        .custom-file-input {
+            width: calc(100% - 120px); // Defina a largura do input para ocupar o espaço menos o tamanho do botão
+            margin-bottom: 10px;
+            border: 1px solid #ccc; // Adicione uma borda ao input
+            padding: 8px;
+            border-radius: 5px; // Adicione bordas arredondadas
+            font-size: 16px; // Tamanho da fonte
+            color: #555; // Cor do texto
+        }
+
+        .custom-file-input:focus {
+            outline: none; // Remova o contorno ao focar
+            border-color: #4CAF50; // Altere a cor da borda ao focar
+        }
+
+        .btn {
+            width: 120px; // Defina a largura do botão
+            background-color: #4CAF50; // Cor de fundo do botão
+            color: white; // Cor do texto do botão
+            border: none; // Remova a borda do botão
+            border-radius: 5px; // Adicione bordas arredondadas
+            cursor: pointer; // Altere o cursor ao passar sobre o botão
+            transition: background-color 0.3s ease; // Adicione uma transição suave ao alterar a cor de fundo
+        }
+
+        .btn:hover {
+            background-color: #45a049; // Altere a cor de fundo ao passar o mouse sobre o botão
+        }
+    }
+
+}

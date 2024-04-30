@@ -18,7 +18,8 @@ export class UploadImagesComponent {
   userId: string | undefined;
   @Input() quadroId: string | undefined;
   card!: Card;
-  
+  public loading: boolean = false; // Variável para controlar o estado de carregamento
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
     private authService: AuthService,
     private cardService: CardService,
@@ -37,24 +38,21 @@ export class UploadImagesComponent {
 
   async enviarImagens(): Promise<void> {
     try {
-      console.log('this.userId:', this.userId);
-      console.log('this.quadroId:', this.quadroId);
-      console.log('this.card.id:', this.card.id);
-      console.log('this.selectedImages:', this.selectedImages);
-      
+      this.loading = true; // Define o estado de carregamento como verdadeiro ao iniciar o envio
+  
       if (this.userId && this.quadroId && typeof this.card.id === 'string' && this.selectedImages.length > 0) {
         const cardId = this.card.id as string; // Convertendo this.card.id para string
         // Enviar todas as imagens selecionadas
         await this.cardService.enviarImagens(this.userId, this.quadroId, cardId, this.selectedImages);
-        
-        // Adicionar os links das imagens ao array de imageURLs
+  
+        // Adicionar os links das imagens ao array de imageURLs 
         for (const image of this.selectedImages) {
           const imageURL = await this.cardService.getImageURL(this.userId, this.quadroId, cardId, image.name);
           this.imageURLs.push(imageURL);
           // Atualize o card com o URL da imagem
           await this.cardService.updateCardImageURL(this.userId, this.quadroId, cardId, imageURL);
         }
-        
+  
         console.log('Todas as imagens foram enviadas com sucesso.');
         // Faça qualquer ação necessária após o envio das imagens, como atualizar a interface, etc.
       } else {
@@ -64,6 +62,9 @@ export class UploadImagesComponent {
     } catch (error) {
       console.error('Erro ao enviar imagens:', error);
       // Lide com o erro adequadamente, exiba uma mensagem para o usuário, etc.
+    }
+    finally {
+      this.loading = false; // Define o estado de carregamento como falso após o envio (sucesso ou erro)
     }
   }
   
@@ -77,7 +78,7 @@ export class UploadImagesComponent {
           this.selectedImages.push(file);
         }
       }
-      
+
       console.log('Imagens selecionadas:', this.selectedImages);
     }
   }

@@ -17,6 +17,9 @@
   display: block;
   margin: 5px 0px;
   min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .example-box {

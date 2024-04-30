@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Card } from '../../model/card/card/card.module';
 import { User } from '../../model/card/user/user.module';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,7 +22,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss']
 })
-export class CardComponent implements OnInit {
+export class CardComponent implements OnInit, OnDestroy  {
   @Input() quadroId: string | undefined;
   userId: string | undefined;
   currentCard: Card | null = null;
@@ -35,6 +35,7 @@ export class CardComponent implements OnInit {
   showImageUpload: boolean = false;
   selectedImage: File | null = null; // Adicionando controle para a imagem selecionada
   images: File[] = []; // Array para armazenar as imagens selecionadas
+  imageURLsSubscription: Subscription | undefined;
 
   imageURL: string | undefined;
   imageURLs: string[] | undefined;
@@ -68,7 +69,18 @@ export class CardComponent implements OnInit {
     this.formCard = this.formBuilder.group({
       images: [[]] // Inicializando o campo de imagens como um array vazio
     });
+
+    if (this.imageURLsSubscription) {
+      this.imageURLsSubscription.unsubscribe();
+    }
   }
+  ngOnDestroy() {
+    // Cancela a assinatura do fluxo observável para evitar vazamentos de memória
+    if (this.imageURLsSubscription) {
+      this.imageURLsSubscription.unsubscribe();
+    }
+  }
+
 
   getCommentKeys(comments: any): string[] {
     return Object.keys(comments || {});
@@ -270,12 +282,25 @@ export class CardComponent implements OnInit {
     fileRef.delete().subscribe(() => {
       console.log('Imagem removida com sucesso do armazenamento.');
       
-      // Agora, você precisa remover o URL da imagem da lista de imageURLs
-      // Aqui, você pode implementar a lógica para remover o imageURL do card.imageURLs
-      // Depois de remover, a lista será atualizada automaticamente na interface do usuário
+      // Remova o URL da imagem do array de imageURLs
+      const index = this.card.imageURLs?.indexOf(imageURL);
+      if (index !== undefined && index !== -1) {
+        this.card.imageURLs?.splice(index, 1); // Remove o URL da imagem do array
+      }
+  
+      // Mostra um alerta de sucesso
+      window.alert('Imagem excluída com sucesso.');
+  
+      // O array imageURLs do cartão foi atualizado, e a interface do usuário será atualizada automaticamente
     }, error => {
       console.error('Erro ao remover imagem do armazenamento:', error);
       // Lidar com o erro adequadamente, exibir mensagem para o usuário, etc.
     });
+  }
+  
+  
+  isValidImageURL(imageURL: string): boolean {
+
+    return true;
   }
 }
